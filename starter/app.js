@@ -142,7 +142,8 @@ var UIController = (function () {
         expensesLabel: '.budget__expenses--value',
         percentageLabel: '.budget__expenses--percentage',
         container: '.container',
-        expensesPercLabel:'.item__percentage'
+        expensesPercLabel:'.item__percentage',
+        dateLabel:'.budget__title--month'
     };
 
     var formatNumber =  function(num,type){
@@ -242,6 +243,29 @@ var UIController = (function () {
             });
         },
 
+        displayMonth : function() {
+            var now = new Date();
+            var year = now.getFullYear();
+            now = now.getMonth();
+            var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            
+            document.querySelector(DOMstrings.dateLabel).textContent = months[now] + ' ' + year;
+        
+        },
+
+        changedType: function(){
+            var fields = document.querySelectorAll(
+                DOMstrings.inputType + ',' +
+                DOMstrings.inputDescription +',' +
+                DOMstrings.inputValue);
+
+            fields.forEach(function(field){
+                field.classList.toggle('red-focus');
+            });
+
+            document.querySelector(DOMstrings.inputBtn).classList.toggle('red');
+        },
+
         getDOMstrings: function () {
             return DOMstrings;
         }
@@ -264,6 +288,9 @@ var controller = (function (budgetCtrl, UICtrl) {
         });
 
         document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
+
+        // change field colors to red or green depending on expense or income
+        document.querySelector(DOM.inputType).addEventListener('change',UICtrl.changedType);
     };
 
     var updateBudget = function () {
@@ -331,6 +358,7 @@ var controller = (function (budgetCtrl, UICtrl) {
     return {
         init: function () {
             console.log('app has started');
+            UICtrl.displayMonth();
             UICtrl.displayBudget({
                 budget: `0`,
                 totalInc: `0`,
